@@ -67,7 +67,7 @@ jobs:
             npm run build
       - save_cache:
           paths: [frontend/node_modules]
-          key: frontend-build
+          key: v1-frontend-build
 
   build-backend:
     docker:
@@ -91,7 +91,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build]
+          keys: [v1-frontend-build]
       - run:
           name: Test front-end
           command: |
