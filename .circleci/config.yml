@@ -221,7 +221,7 @@ jobs:
             SUCCESS=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" \
             --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID})
             echo "Value sent to memstash: $SUCCESS"
-     - destroy-environment:
+      - destroy-environment:
            workflow_id: ${CIRCLE_WORKFLOW_ID}
 
   deploy-frontend:
