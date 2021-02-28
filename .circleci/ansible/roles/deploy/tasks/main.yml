@@ -1,0 +1,30 @@
+---
+- name: "create backend folder"
+  become: true
+  file:
+    path: /home/ubuntu/backend
+    state: directory
+
+- name: "unarchive and copy backend"
+  become: true
+  unarchive:
+    src: /root/project/backend.tar.gz
+    dest: /home/ubuntu/backend/
+
+- name: install node modules
+  become: true
+  shell: |
+    cd /home/ubuntu/backend
+    npm install
+
+- name: building node service
+  become: true
+  shell: |
+    cd /home/ubuntu/backend
+    npm run build
+
+- name: start mp2
+  become: true
+  shell: |
+    cd /home/ubuntu/backend
+    pm2 start npm --name backend -- start
