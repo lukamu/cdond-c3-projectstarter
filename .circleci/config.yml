@@ -280,9 +280,10 @@ jobs:
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
             cat backend/.env
             tar -C backend -czvf backend.tar.gz .
-            mkdir /home/ubuntu/backend
-            tar -zxvf /root/project/backend.tar.gz /home/ubuntu/backend/
-            cd /home/ubuntu/backend
+            pwd 
+            mkdir backend
+            tar -zxvf /root/project/backend.tar.gz backend
+            cd backend
             npm install
             npm run build
             pm2 start npm --name backend -- start
