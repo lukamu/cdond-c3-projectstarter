@@ -5,11 +5,11 @@
     path: /home/ubuntu/backend
     state: directory
 
-- name: check all modules are installed
+- name: check hostname and
   become: true
   shell: |
-    apk add --update ansible tar gzip nodejs npm curl
-    pip install awscli
+    hostname
+    whoami
 
 - name: "unarchive and copy backend"
   become: true
