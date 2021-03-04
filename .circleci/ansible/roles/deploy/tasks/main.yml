@@ -5,12 +5,6 @@
     path: /home/ubuntu/backend
     state: directory
 
-- name: check hostname and
-  become: true
-  shell: |
-    hostname
-    whoami
-
 - name: "unarchive and copy backend"
   become: true
   unarchive:

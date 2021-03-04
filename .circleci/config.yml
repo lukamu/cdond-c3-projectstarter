@@ -264,6 +264,7 @@ jobs:
           command: |
             apk add --update ansible tar gzip nodejs npm curl
             pip install awscli
+      - run: cat .circleci/ansible/inventory.txt
       - run:
           name: Deploy backend
           command: |
@@ -280,9 +281,6 @@ jobs:
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
             cat backend/.env
             tar -C backend -czvf backend.tar.gz .
-            whoami
-            hostname
-            ifconfig
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
 
           no_output_timeout: 30m
