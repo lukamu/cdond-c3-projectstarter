@@ -281,6 +281,8 @@ jobs:
             cat backend/.env
             tar -C backend -czvf backend.tar.gz .
             whoami
+            hostname
+            ifconfig
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
 
           no_output_timeout: 30m
