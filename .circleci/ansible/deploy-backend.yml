@@ -37,12 +37,8 @@
 
     - name: install node modules
       become: true
-      apt:
-        name: ["nodejs", "npm"]
-
-    - name: install node modules
-      become: true
       shell: |
+        apk add --update ansible tar gzip nodejs npm curl
         pip install awscli
 
   roles:
