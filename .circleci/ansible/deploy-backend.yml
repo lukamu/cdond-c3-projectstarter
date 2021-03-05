@@ -30,10 +30,20 @@
       become: false
       debug: msg="{{ ansible_distribution_major_version }}"
 
+    - name: "upgrade packages."
+      become: true
+      apt:
+        upgrade: "yes"
+
+    - name: install node modules
+      become: true
+      apt:
+        name:
+          ["ansible", "tar", "gzip", "nodejs", "npm", "curl", "nodejs", "npm"]
+
     - name: install node modules
       become: true
       shell: |
-        apk add --update ansible tar gzip nodejs npm curl
         pip install awscli
 
   roles:
