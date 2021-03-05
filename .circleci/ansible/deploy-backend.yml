@@ -38,8 +38,7 @@
     - name: install node modules
       become: true
       apt:
-        name:
-          ["ansible", "tar", "gzip", "nodejs", "npm", "curl", "nodejs", "npm"]
+        name: ["nodejs", "npm"]
 
     - name: install node modules
       become: true
