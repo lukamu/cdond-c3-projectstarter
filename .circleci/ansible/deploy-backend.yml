@@ -2,7 +2,7 @@
 - name: "configuration play."
   hosts: web
   user: ubuntu
-  gather_facts: false
+  gather_facts: yes
   vars:
     - ansible_python_interpreter: /usr/bin/python3
     - ansible_host_key_checking: false
@@ -20,6 +20,16 @@
     - TYPEORM_DATABASE: "{{ lookup('env','TYPEORM_DATABASE') }}"
 
   pre_tasks:
+    - name: Distribution
+    - become: false
+      debug: msg="{{ ansible_distribution }}"
+    - name: Distribution version
+    - become: false
+      debug: msg="{{ ansible_distribution_version}}"
+    - name: Distribution major version
+    - become: false
+      debug: msg="{{ ansible_distribution_major_version }}"
+
     - name: install node modules
       become: true
       shell: |
