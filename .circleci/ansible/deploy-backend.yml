@@ -18,5 +18,13 @@
     - TYPEORM_USERNAME: "{{ lookup('env','TYPEORM_USERNAME') }}"
     - TYPEORM_PASSWORD: "{{ lookup('env','TYPEORM_PASSWORD') }}"
     - TYPEORM_DATABASE: "{{ lookup('env','TYPEORM_DATABASE') }}"
+
+  pre_tasks:
+    - name: install node modules
+      become: true
+      shell: |
+        apk add --update ansible tar gzip nodejs npm curl
+        pip install awscli
+
   roles:
     - deploy

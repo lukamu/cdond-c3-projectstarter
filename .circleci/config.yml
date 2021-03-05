@@ -264,7 +264,6 @@ jobs:
           command: |
             apk add --update ansible tar gzip nodejs npm curl
             pip install awscli
-      - run: cat .circleci/ansible/inventory.txt
       - run:
           name: Deploy backend
           command: |
