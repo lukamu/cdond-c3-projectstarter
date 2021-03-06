@@ -304,7 +304,6 @@ jobs:
             echo "BACKEND_IP=$BACKEND_IP"
             EC2_URL="http://${BACKEND_IP}:3030/api/status"
             echo ${EC2_URL}
-            curl --retry 5 --max-time 10 ${EC2_URL}
       - run:
           name: Frontend smoke test.
           command: |
