@@ -304,7 +304,6 @@ jobs:
             echo "BACKEND_IP=$BACKEND_IP"
             EC2_URL="http://${BACKEND_IP}:3030/api/status"
             echo ${EC2_URL}
-            curl ${EC2_URL}
       - run:
           name: Frontend smoke test.
           command: |
@@ -391,7 +390,13 @@ workflows:
           filters:
             branches:
               only: [master]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
+          filters:
+            branches:
+              only: [master]
       - cloudfront-update:
+          requires: [smoke-test]
           filters:
             branches:
               only: [master]
