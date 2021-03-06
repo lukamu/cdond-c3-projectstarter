@@ -296,11 +296,15 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-            export BACKEND_IP=3.137.194.0
+            export BACKEND_IP=$(aws ec2 describe-instances \
+              --region << pipeline.parameters.region >> \
+              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID}" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text)
             echo "BACKEND_IP=$BACKEND_IP"
             EC2_URL="http://${BACKEND_IP}:3030/api/status"
             echo ${EC2_URL}
-            curl ${EC2_URL}
+            curl --retry 5 --max-time 10 ${EC2_URL}
       - run:
           name: Frontend smoke test.
           command: |
@@ -315,7 +319,32 @@ jobs:
 workflows:
   default:
     jobs:
+      - deploy-infrastructure:
+          filters:
+            branches:
+              only: [master]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+          filters:
+            branches:
+              only: [master]
+      - run-migrations:
+          requires: [configure-infrastructure]
+          filters:
+            branches:
+              only: [master]
+      - deploy-frontend:
+          requires: [run-migrations]
+          filters:
+            branches:
+              only: [master]
+      - deploy-backend:
+          requires: [run-migrations]
+          filters:
+            branches:
+              only: [master]
       - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
           filters:
             branches:
               only: [master]
