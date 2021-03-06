@@ -304,6 +304,7 @@ jobs:
             echo "BACKEND_IP=$BACKEND_IP"
             EC2_URL="http://${BACKEND_IP}:3030/api/status"
             echo ${EC2_URL}
+            curl ${EC2_URL}
       - run:
           name: Frontend smoke test.
           command: |
@@ -330,7 +331,7 @@ jobs:
             aws cloudformation deploy \
                 --template-file .circleci/files/cloudfront.yml \
                 --stack-name udapeople-cloudfront-1 \
-                --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID}" \
+                --parameters ParameterKey=WorkflowID,ParameterValue=${CIRCLE_WORKFLOW_ID},UsePreviousValue=false \
                 --tags project=udapeople-cloudfront
 
   cleanup:
@@ -350,6 +351,7 @@ jobs:
             echo "$STACKS[*]"
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
               then
+                aws s3 rb "s3://udapeople-${OldWorkflowID}" --force
                 aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
                 aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
             fi
@@ -382,11 +384,6 @@ workflows:
               only: [master]
       - deploy-backend:
           requires: [run-migrations]
-          filters:
-            branches:
-              only: [master]
-      - smoke-test:
-          requires: [deploy-backend, deploy-frontend]
           filters:
             branches:
               only: [master]
