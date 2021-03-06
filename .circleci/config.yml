@@ -327,13 +327,36 @@ jobs:
       - run:
           name: Update cloudfront distribution
           command: |
-            aws cloudformation update-stack \
-              --use-previous-template \
-              --stack-name udapeople-cloudfront \
-              --parameters ParameterKey=WorkflowID,ParameterValue=${CIRCLE_WORKFLOW_ID},UsePreviousValue=false
+          aws cloudformation deploy \
+              --template-file .circleci/files/cloudfront.yml \
+              --stack-name udapeople-cloudfront-1 \
+              --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID}" \
+              --tags project=udapeople-cloudfront
+
+  cleanup:
+    docker:
+      - image: << pipeline.parameters.nodejs-awscli-image >>
+    steps:
+      - checkout
+      - run:
+          name: Get old stack workflow id and remove old stacks and files
+          command: |
+            export OldWorkflowID=$(aws cloudformation \
+              list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+              --no-paginate --output text)
+            echo Old Workflow Id: "$OldWorkflowID"
+            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
+              --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
+            echo "$STACKS[*]"
+            if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
+              then
+                aws s3 rb "s3://udapeople-${OldWorkflowID}" --force
+                aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
+                aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
+            fi
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID}
-      - revert-migrations:
+      - revert-migration:
           workflow_id: ${CIRCLE_WORKFLOW_ID}
 
 workflows:
@@ -370,6 +393,11 @@ workflows:
               only: [master]
       - cloudfront-update:
           requires: [smoke-test]
+          filters:
+            branches:
+              only: [master]
+      - cleanup:
+          requires: [cloudfront-update]
           filters:
             branches:
               only: [master]
