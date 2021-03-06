@@ -296,11 +296,7 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-            export BACKEND_IP=$(aws ec2 describe-instances \
-              --region << pipeline.parameters.region >> \
-              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID}" \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --output text)
+            export BACKEND_IP=3.137.194.0
             echo "BACKEND_IP=$BACKEND_IP"
             EC2_URL="http://${BACKEND_IP}:3030/api/status"
             echo ${EC2_URL}
