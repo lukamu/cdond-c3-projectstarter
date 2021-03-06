@@ -297,7 +297,6 @@ jobs:
           name: Backend smoke test.
           command: |
             export BACKEND_IP=fottiti
-            source $BASH_ENV
             curl "http://${BACKEND_IP}:3030/api/status"
       - run:
           name: Frontend smoke test.
