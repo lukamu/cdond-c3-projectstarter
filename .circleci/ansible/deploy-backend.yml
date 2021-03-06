@@ -35,11 +35,5 @@
       apt:
         upgrade: "yes"
 
-    - name: install node modules
-      become: true
-      shell: |
-        apk add --update ansible tar gzip nodejs npm curl
-        pip install awscli
-
   roles:
     - deploy
