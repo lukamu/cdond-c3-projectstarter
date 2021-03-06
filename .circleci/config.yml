@@ -312,7 +312,7 @@ jobs:
                then
                exit 1
              else
-               exit 1
+               exit 0
              fi
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID}
@@ -365,6 +365,11 @@ workflows:
               only: [master]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
+          filters:
+            branches:
+              only: [master]
+      - cloudfront-update:
+          requires: [smoke-test]
           filters:
             branches:
               only: [master]
